@@ -1,0 +1,191 @@
+swagger: "2.0"
+info:
+  title: Inventory API
+  version: "1.0.0"
+host: localhost:8000
+basePath: "/"
+schemes:
+- "http"
+paths:
+  /devices:
+    get:
+      summary: List all devices
+      responses:
+        200:
+          description: An array of devices
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Device'
+    post:
+      summary: Add a new device
+      parameters:
+        - in: body
+          name: device
+          description: The device to create
+          schema:
+            $ref: '#/definitions/Device'
+      responses:
+        201:
+          description: New device created
+        500:
+          description: Error in the server
+
+  /devices/{id}:
+    get:
+      summary: Get a device by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+          description: ID of the device to fetch
+      responses:
+        200:
+          description: Details of the device
+          schema:
+            $ref: '#/definitions/Device'
+        404:
+          description: Device not found
+        500:
+          description: Error in the server
+    put:
+      summary: Update a device
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+          description: ID of the device to update
+        - in: body
+          name: device
+          description: Updated device information
+          schema:
+            $ref: '#/definitions/Device'
+      responses:
+        200:
+          description: Device updated successfully
+        404:
+          description: Device not found
+        500:
+          description: Error in the server
+    delete:
+      summary: Delete a device
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+          description: ID of the device to delete
+      responses:
+        200:
+          description: Device deleted successfully
+        404:
+          description: Device not found
+        500:
+          description: Error in the server
+  /register:
+    post:
+      summary: Register a new user
+      parameters:
+        - in: body
+          name: user
+          description: User to be registered
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        201:
+          description: User registered successfully
+        500:
+          description: Error in the server
+  /upload/{deviceId}:
+    post:
+      summary: Upload an image for a device
+      parameters:
+        - in: path
+          name: deviceId
+          required: true
+          type: integer
+          description: ID of the device
+        - in: formData
+          name: deviceImage
+          type: file
+          description: Image file to upload
+      responses:
+        200:
+          description: Image uploaded successfully
+        404:
+          description: Device not found
+        500:
+          description: Error in the server
+  /devices/{id}/checkout:
+    post:
+      summary: Check out a device
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+          description: ID of the device to check out
+      responses:
+        200:
+          description: Device checked out successfully
+        400:
+          description: Device is not available or does not exist
+        500:
+          description: Error in the server
+
+  /devices/{id}/checkin:
+    post:
+      summary: Check in a device
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+          description: ID of the device to check in
+      responses:
+        200:
+          description: Device checked in successfully
+        404:
+          description: Device not found
+        500:
+          description: Error in the server
+
+definitions:
+  Device:
+    type: object
+    required:
+      - device_name
+      - description
+      - serial_number
+      - manufacturer
+    properties:
+      id:
+        type: integer
+        format: int64
+      device_name:
+        type: string
+      description:
+        type: string
+      serial_number:
+        type: string
+      manufacturer:
+        type: string
+
+  User:
+    type: object
+    required:
+      - username
+      - password
+      - email
+    properties:
+      id:
+        type: integer
+        format: int64
+      username:
+        type: string
+      password:
+        type: string
+      email:
+        type: string
